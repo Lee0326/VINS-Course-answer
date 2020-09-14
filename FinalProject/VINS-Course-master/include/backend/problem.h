@@ -76,6 +76,8 @@ namespace myslam
      */
             bool Solve(int iterations = 10);
 
+            bool SolveDogLeg(int iterations = 10);
+
             /// 边缘化一个frame和以它为host的landmark
             bool Marginalize(std::shared_ptr<Vertex> frameVertex,
                              const std::vector<std::shared_ptr<Vertex>> &landmarkVerticies);

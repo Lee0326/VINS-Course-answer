@@ -283,6 +283,23 @@ namespace myslam
             return true;
         }
 
+        bool Problem::SolveDogLeg(int iterations)
+        {
+            double eps1 = 1e-12, eps2 = 1e-12, eps3 = 1e-12;
+            double radius = 1.0;
+            auto g = b_;
+            Eigen::MatrixXd f; //needed to be complete. The Jacobian matrix
+            bool found = false;
+            if (f.norm() <= eps3 || g.norm() <= eps1)
+                found = true;
+            int iter = 0;
+            while (!found && iter < iterations)
+            {
+                iter += 1;
+                double aplha = g.squaredNorm() / (f * g).squaredNorm();
+            }
+        }
+
         bool Problem::SolveGenericProblem(int iterations)
         {
             return true;
