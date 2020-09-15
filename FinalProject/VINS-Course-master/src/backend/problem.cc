@@ -716,7 +716,7 @@ namespace myslam
 
         bool Problem::IsGoodStepInLM()
         {
-            lmStrategy_ == LMStrategy::MODIFIED;
+            lmStrategy_ == LMStrategy::DOGLEG;
             if (lmStrategy_ == LMStrategy::NIELSEN)
             {
                 double scale = 0;
@@ -796,6 +796,43 @@ namespace myslam
                 else
                 {
                     currentLambda_ += (std::abs)(currentChi_ - tempChi) / (2 * alpha);
+                    return false;
+                }
+            }
+            else if (lmStrategy_ == LMStrategy::DOGLEG)
+            {
+                double scale = 0;
+                //    scale = 0.5 * delta_x_.transpose() * (currentLambda_ * delta_x_ + b_);
+                //    scale += 1e-3;    // make sure it's non-zero :)
+                scale = 0.5 * delta_x_.transpose() * (currentLambda_ * delta_x_ + b_);
+                scale += 1e-6; // make sure it's non-zero :)
+
+                // recompute residuals after update state
+                double tempChi = 0.0;
+                for (auto edge : edges_)
+                {
+                    edge.second->ComputeResidual();
+                    tempChi += edge.second->RobustChi2();
+                }
+                if (err_prior_.size() > 0)
+                    tempChi += err_prior_.squaredNorm();
+                tempChi *= 0.5; // 1/2 * err^2
+
+                double rho = (currentChi_ - tempChi) / scale;
+                if (rho > 0 && isfinite(tempChi)) // last step was good, 误差在下降
+                {
+                    double alpha = 1. - pow((2 * rho - 1), 3);
+                    alpha = std::min(alpha, 2. / 3.);
+                    double scaleFactor = (std::max)(1. / 3., alpha);
+                    currentLambda_ *= scaleFactor;
+                    ni_ = 2;
+                    currentChi_ = tempChi;
+                    return true;
+                }
+                else
+                {
+                    currentLambda_ *= ni_;
+                    ni_ *= 2;
                     return false;
                 }
             }

@@ -42,7 +42,8 @@ namespace myslam
             enum class LMStrategy
             {
                 NIELSEN,
-                MODIFIED
+                MODIFIED,
+                DOGLEG
             };
 
             EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
