@@ -166,6 +166,7 @@ namespace myslam
             double currentChi_;
             double stopThresholdLM_; // LM 迭代退出阈值条件
             double ni_;              //控制 Lambda 缩放大小
+            double dogleg_radius_;
 
             ProblemType problemType_;
 
@@ -175,6 +176,8 @@ namespace myslam
             MatXX Hessian_;
             VecX b_;
             VecX delta_x_;
+            VecX delta_x_sd_;
+            VecX delta_x_gn_;
 
             /// 先验部分信息
             MatXX H_prior_;
