@@ -195,95 +195,95 @@ namespace myslam
             return true;
         }
 
+        // bool Problem::Solve(int iterations)
+        // {
+
+        //     if (edges_.size() == 0 || verticies_.size() == 0)
+        //     {
+        //         std::cerr << "\nCannot solve problem without edges or verticies" << std::endl;
+        //         return false;
+        //     }
+
+        //     TicToc t_solve;
+        //     // 统计优化变量的维数，为构建 H 矩阵做准备
+        //     SetOrdering();
+        //     // 遍历edge, 构建 H 矩阵
+        //     MakeHessian();
+        //     // LM 初始化
+        //     ComputeLambdaInitLM();
+        //     // LM 算法迭代求解
+        //     bool stop = false;
+        //     int iter = 0;
+        //     double last_chi_ = 1e20;
+        //     while (!stop && (iter < iterations))
+        //     {
+        //         std::cout << "iter: " << iter << " , chi= " << currentChi_ << " , Lambda= " << currentLambda_ << std::endl;
+        //         bool oneStepSuccess = false;
+        //         int false_cnt = 0;
+        //         while (!oneStepSuccess && false_cnt < 10) // 不断尝试 Lambda, 直到成功迭代一步
+        //         {
+        //             // setLambda
+        //             //            AddLambdatoHessianLM();
+        //             // 第四步，解线性方程
+        //             SolveLinearSystem();
+        //             //
+        //             //            RemoveLambdaHessianLM();
+
+        //             // 优化退出条件1： delta_x_ 很小则退出
+        //             //            if (delta_x_.squaredNorm() <= 1e-6 || false_cnt > 10)
+        //             // TODO:: 退出条件还是有问题, 好多次误差都没变化了，还在迭代计算，应该搞一个误差不变了就中止
+        //             //            if ( false_cnt > 10)
+        //             //            {
+        //             //                stop = true;
+        //             //                break;
+        //             //            }
+
+        //             // 更新状态量
+        //             UpdateStates();
+        //             // 判断当前步是否可行以及 LM 的 lambda 怎么更新, chi2 也计算一下
+        //             oneStepSuccess = IsGoodStepInLM();
+        //             // 后续处理，
+        //             if (oneStepSuccess)
+        //             {
+        //                 //                std::cout << " get one step success\n";
+
+        //                 // 在新线性化点 构建 hessian
+        //                 MakeHessian();
+        //                 // TODO:: 这个判断条件可以丢掉，条件 b_max <= 1e-12 很难达到，这里的阈值条件不应该用绝对值，而是相对值
+        //                 //                double b_max = 0.0;
+        //                 //                for (int i = 0; i < b_.size(); ++i) {
+        //                 //                    b_max = max(fabs(b_(i)), b_max);
+        //                 //                }
+        //                 //                // 优化退出条件2： 如果残差 b_max 已经很小了，那就退出
+        //                 //                stop = (b_max <= 1e-12);
+        //                 false_cnt = 0;
+        //             }
+        //             else
+        //             {
+        //                 false_cnt++;
+        //                 RollbackStates(); // 误差没下降，回滚
+        //             }
+        //         }
+        //         iter++;
+
+        //         // 优化退出条件3： currentChi_ 跟第一次的 chi2 相比，下降了 1e6 倍则退出
+        //         // TODO:: 应该改成前后两次的误差已经不再变化
+        //         //        if (sqrt(currentChi_) <= stopThresholdLM_)
+        //         //        if (sqrt(currentChi_) < 1e-15)
+        //         if (last_chi_ - currentChi_ < 1e-5)
+        //         {
+        //             std::cout << "sqrt(currentChi_) <= stopThresholdLM_" << std::endl;
+        //             stop = true;
+        //         }
+        //         last_chi_ = currentChi_;
+        //     }
+        //     std::cout << "problem solve cost: " << t_solve.toc() << " ms" << std::endl;
+        //     std::cout << "   makeHessian cost: " << t_hessian_cost_ << " ms" << std::endl;
+        //     t_hessian_cost_ = 0.;
+        //     return true;
+        // }
+
         bool Problem::Solve(int iterations)
-        {
-
-            if (edges_.size() == 0 || verticies_.size() == 0)
-            {
-                std::cerr << "\nCannot solve problem without edges or verticies" << std::endl;
-                return false;
-            }
-
-            TicToc t_solve;
-            // 统计优化变量的维数，为构建 H 矩阵做准备
-            SetOrdering();
-            // 遍历edge, 构建 H 矩阵
-            MakeHessian();
-            // LM 初始化
-            ComputeLambdaInitLM();
-            // LM 算法迭代求解
-            bool stop = false;
-            int iter = 0;
-            double last_chi_ = 1e20;
-            while (!stop && (iter < iterations))
-            {
-                std::cout << "iter: " << iter << " , chi= " << currentChi_ << " , Lambda= " << currentLambda_ << std::endl;
-                bool oneStepSuccess = false;
-                int false_cnt = 0;
-                while (!oneStepSuccess && false_cnt < 10) // 不断尝试 Lambda, 直到成功迭代一步
-                {
-                    // setLambda
-                    //            AddLambdatoHessianLM();
-                    // 第四步，解线性方程
-                    SolveLinearSystem();
-                    //
-                    //            RemoveLambdaHessianLM();
-
-                    // 优化退出条件1： delta_x_ 很小则退出
-                    //            if (delta_x_.squaredNorm() <= 1e-6 || false_cnt > 10)
-                    // TODO:: 退出条件还是有问题, 好多次误差都没变化了，还在迭代计算，应该搞一个误差不变了就中止
-                    //            if ( false_cnt > 10)
-                    //            {
-                    //                stop = true;
-                    //                break;
-                    //            }
-
-                    // 更新状态量
-                    UpdateStates();
-                    // 判断当前步是否可行以及 LM 的 lambda 怎么更新, chi2 也计算一下
-                    oneStepSuccess = IsGoodStepInLM();
-                    // 后续处理，
-                    if (oneStepSuccess)
-                    {
-                        //                std::cout << " get one step success\n";
-
-                        // 在新线性化点 构建 hessian
-                        MakeHessian();
-                        // TODO:: 这个判断条件可以丢掉，条件 b_max <= 1e-12 很难达到，这里的阈值条件不应该用绝对值，而是相对值
-                        //                double b_max = 0.0;
-                        //                for (int i = 0; i < b_.size(); ++i) {
-                        //                    b_max = max(fabs(b_(i)), b_max);
-                        //                }
-                        //                // 优化退出条件2： 如果残差 b_max 已经很小了，那就退出
-                        //                stop = (b_max <= 1e-12);
-                        false_cnt = 0;
-                    }
-                    else
-                    {
-                        false_cnt++;
-                        RollbackStates(); // 误差没下降，回滚
-                    }
-                }
-                iter++;
-
-                // 优化退出条件3： currentChi_ 跟第一次的 chi2 相比，下降了 1e6 倍则退出
-                // TODO:: 应该改成前后两次的误差已经不再变化
-                //        if (sqrt(currentChi_) <= stopThresholdLM_)
-                //        if (sqrt(currentChi_) < 1e-15)
-                if (last_chi_ - currentChi_ < 1e-5)
-                {
-                    std::cout << "sqrt(currentChi_) <= stopThresholdLM_" << std::endl;
-                    stop = true;
-                }
-                last_chi_ = currentChi_;
-            }
-            std::cout << "problem solve cost: " << t_solve.toc() << " ms" << std::endl;
-            std::cout << "   makeHessian cost: " << t_hessian_cost_ << " ms" << std::endl;
-            t_hessian_cost_ = 0.;
-            return true;
-        }
-
-        bool Problem::SolveDogLeg(int iterations)
         {
             if (edges_.size() == 0 || verticies_.size() == 0)
             {
@@ -469,7 +469,6 @@ namespace myslam
             //#endif
             for (auto &edge : edges_)
             {
-
                 edge.second->ComputeResidual();
                 edge.second->ComputeJacobians();
 
@@ -804,7 +803,9 @@ namespace myslam
                 double scale = 0;
                 //    scale = 0.5 * delta_x_.transpose() * (currentLambda_ * delta_x_ + b_);
                 //    scale += 1e-3;    // make sure it's non-zero :)
-                scale = 0.5 * delta_x_.transpose() * (currentLambda_ * delta_x_ + b_);
+                //scale = 0.5 * delta_x_.transpose() * (currentLambda_ * delta_x_ + b_);
+                scale = delta_x_.transpose() * b_;
+                scale += -0.5 * delta_x_.transpose() * Hessian_ * delta_x_;
                 scale += 1e-6; // make sure it's non-zero :)
 
                 // recompute residuals after update state
@@ -819,20 +820,21 @@ namespace myslam
                 tempChi *= 0.5; // 1/2 * err^2
 
                 double rho = (currentChi_ - tempChi) / scale;
-                if (rho > 0 && isfinite(tempChi)) // last step was good, 误差在下降
+                if (rho > 0) // last step was good, 误差在下降
                 {
-                    double alpha = 1. - pow((2 * rho - 1), 3);
-                    alpha = std::min(alpha, 2. / 3.);
-                    double scaleFactor = (std::max)(1. / 3., alpha);
-                    currentLambda_ *= scaleFactor;
-                    ni_ = 2;
                     currentChi_ = tempChi;
+                    if (rho > 0.75)
+                    {
+                        dogleg_radius_ = std::max(dogleg_radius_, 3.0 * delta_x_.norm());
+                    }
+                    else if (rho < 0.25)
+                    {
+                        dogleg_radius_ /= 2.0;
+                    }
                     return true;
                 }
                 else
                 {
-                    currentLambda_ *= ni_;
-                    ni_ *= 2;
                     return false;
                 }
             }
