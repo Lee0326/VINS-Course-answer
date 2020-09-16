@@ -39,10 +39,10 @@ namespace myslam
                 GENERIC_PROBLEM
             };
 
-            enum class LMStrategy
+            enum class OptimizationStrategy
             {
-                NIELSEN,
-                MODIFIED,
+                LM_NIELSEN,
+                LM_MODIFIED,
                 DOGLEG
             };
 
@@ -151,7 +151,6 @@ namespace myslam
             /// Levenberg
             /// 计算LM算法的初始Lambda
             void ComputeLambdaInitLM();
-
             /// Hessian 对角线加上或者减去  Lambda
             void AddLambdatoHessianLM();
 
@@ -163,15 +162,16 @@ namespace myslam
             /// PCG 迭代线性求解器
             VecX PCGSolver(const MatXX &A, const VecX &b, int maxIter);
 
-            double currentLambda_;
+            double currentLambda_ = 0.0;
             double currentChi_;
             double stopThresholdLM_; // LM 迭代退出阈值条件
             double ni_;              //控制 Lambda 缩放大小
             double dogleg_radius_;
+            double eps1_, eps2_, eps3_ = 1e-30;
 
             ProblemType problemType_;
 
-            LMStrategy lmStrategy_;
+            OptimizationStrategy OpStrategy_;
 
             /// 整个信息矩阵
             MatXX Hessian_;
@@ -179,6 +179,8 @@ namespace myslam
             VecX delta_x_;
             VecX delta_x_sd_;
             VecX delta_x_gn_;
+            double alpha;
+            double beta;
 
             /// 先验部分信息
             MatXX H_prior_;
