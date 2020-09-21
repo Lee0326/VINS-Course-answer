@@ -37,7 +37,7 @@ namespace myslam
         {
             LogoutVectorSize();
             verticies_marg_.clear();
-            OpStrategy_ = OptimizationStrategy::DOGLEG;
+            OpStrategy_ = OptimizationStrategy::LM_MODIFIED;
         }
 
         Problem::~Problem()
