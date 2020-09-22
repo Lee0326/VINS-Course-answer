@@ -8,7 +8,7 @@
 #include "eigen_types.h"
 #include "edge.h"
 #include "vertex.h"
-
+#include <fstream>
 typedef unsigned long ulong;
 
 namespace myslam
@@ -218,7 +218,6 @@ namespace myslam
 
             // verticies need to marg. <Ordering_id_, Vertex>
             HashVertex verticies_marg_;
-
             bool bDebug = false;
             double t_hessian_cost_ = 0.0;
             double t_PCGsovle_cost_ = 0.0;

@@ -15,11 +15,13 @@ using namespace std;
 
 // define the format you want, you only need one instance of this...
 const static Eigen::IOFormat CSVFormat(Eigen::StreamPrecision, Eigen::DontAlignCols, ", ", "\n");
+std::string name = "cost_output_.csv";
+std::ofstream cost_out(name.c_str(), fstream::out);
 
 void writeToCSVfile(std::string name, Eigen::MatrixXd matrix)
 {
     std::ofstream f(name.c_str());
-    f << matrix.format(CSVFormat);
+    f << matrix.format(CSVFormat) << endl;
 }
 
 namespace myslam
@@ -37,7 +39,7 @@ namespace myslam
         {
             LogoutVectorSize();
             verticies_marg_.clear();
-            OpStrategy_ = OptimizationStrategy::LM_MODIFIED;
+            OpStrategy_ = OptimizationStrategy::DOGLEG;
         }
 
         Problem::~Problem()
@@ -198,6 +200,7 @@ namespace myslam
 
         bool Problem::Solve(int iterations)
         {
+
             if (edges_.size() == 0 || verticies_.size() == 0)
             {
                 std::cerr << "\nCannot solve problem without edges or verticies" << std::endl;
@@ -285,6 +288,8 @@ namespace myslam
             }
             std::cout << "problem solve cost: " << t_solve.toc() << " ms" << std::endl;
             std::cout << "   makeHessian cost: " << t_hessian_cost_ << " ms" << std::endl;
+            cost_out << t_solve.toc() << "," << t_hessian_cost_ << endl;
+            //cost_out.flush();
             t_hessian_cost_ = 0.;
             return true;
         }
