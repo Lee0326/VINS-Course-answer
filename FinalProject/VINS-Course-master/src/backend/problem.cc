@@ -373,6 +373,7 @@ namespace myslam
                 auto jacobians = edge.second->Jacobians();
                 auto verticies = edge.second->Verticies();
                 assert(jacobians.size() == verticies.size());
+#pragma omp parallel for
                 for (size_t i = 0; i < verticies.size(); ++i)
                 {
                     auto v_i = verticies[i];
@@ -594,7 +595,7 @@ namespace myslam
             ni_ = 2.;
             currentLambda_ = 0.0;
             currentChi_ = 0.0;
-            dogleg_radius_ = 1.0;
+            dogleg_radius_ = 2.0;
 
             for (auto edge : edges_)
             {

@@ -1,0 +1,33 @@
+load('cost_output_dogleg.csv');
+load('cost_output_modified.csv');
+load('cost_output_nielsen.csv');
+load('cost_output_openmv_nielsen.csv');
+
+figure;
+plot(cost_output_modified);
+xlim([0,1100]);
+ylim([0,140]);
+xlabel('time/s');
+ylabel('cost/s');
+title('lm modified')
+figure;
+plot(cost_output_nielsen);
+xlim([0,1100]);
+ylim([0,140]);
+xlabel('time/s');
+ylabel('cost/s');
+title('lm nielsen');
+figure;
+plot(cost_output_dogleg);
+xlim([0,1100]);
+ylim([0,140]);
+xlabel('time/s');
+ylabel('cost/s');
+title('dogleg');
+figure;
+plot(cost_output_openmv_nielsen);
+xlim([0,1100]);
+ylim([0,240]);
+xlabel('time/s');
+ylabel('cost/s');
+title('openmp');

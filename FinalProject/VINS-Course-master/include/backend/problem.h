@@ -1,5 +1,6 @@
 #ifndef MYSLAM_BACKEND_PROBLEM_H
 #define MYSLAM_BACKEND_PROBLEM_H
+#define USE_OPENMP
 
 #include <unordered_map>
 #include <map>
@@ -9,6 +10,7 @@
 #include "edge.h"
 #include "vertex.h"
 #include <fstream>
+
 typedef unsigned long ulong;
 
 namespace myslam
